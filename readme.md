@@ -267,6 +267,11 @@ Ensure:
 
 ---
 
+### Example use
+
+All my notes converted using this tool and avaliable here: 
+https://hiddenlayer.ddns.net/#notes
+
 ## Future Improvements
 
 - GUI interface
@@ -291,6 +296,7 @@ If you find bugs or have ideas for improvements, open an issue on GitHub.
 MIT License
 
 ---
+
 
 ## Acknowledgements
 
