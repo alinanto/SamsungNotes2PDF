@@ -82,7 +82,8 @@ pip install -r requirements.txt
 - `numpy` — pixel operations
 - `pyautogui` — GUI automation and screenshots
 - `keyboard` — keyboard event handling
-- `Pillow` — image manipulation
+- `pynput` - Handle mouse inputs
+- `img2pdf` - Handle image to pdf conversion.
 
 ---
 
@@ -91,16 +92,16 @@ pip install -r requirements.txt
 Run the main script:
 
 ```bash
-python main.py
+python salvageNotes.py
 ```
 
 Follow the on-screen instructions.
 
 The script may ask you to:
 
-- position the Samsung Notes window
-- select divider colors
-- confirm scrolling parameters
+- `Change the SCREEN_REGION` : If you want to adjust this region of capture (recommended for first time use) type _"y"_ when promted, go to the  the Samsung Notes window (in fullscreen and read mode configuration) and wait for 10 sec. The script will capture an screenshot and open a new window for you to select the screen region. Use mouse to select the rectangular region (avoid toolbar and scroll bar area) and then click c to confirm or r to reset.
+- `Select divider colors` : By default the divider color is set to gray, but depending on your color mode it may be different for your use. When the script froms for change, press _"y"_ and then go to the samsung Notes app and press `Ctrl + Left Mouse Buttom` on the divider area to select the page divider color. 
+- `Confirm scrolling parameters` : By default scrolling is set to half the page, you can increase this if your resolution is higher than 1980 x 1080. You might need to adjust the `MAX_SEARCH` and `MIN_SEARCH` to speed up the overlap searching function.  
 
 ---
 
@@ -132,8 +133,6 @@ SamsungNotes2PDF/
 ├── main.py
 ├── requirements.txt
 ├── output/
-├── screenshots/
-└── stitched/
 ```
 
 ---
@@ -164,6 +163,99 @@ Try adjusting:
 - overlap detection threshold
 - scroll amount
 - divider RGB tolerance
+
+---
+
+## Script Overview
+
+### `salvageNotes.py`
+
+Main automation pipeline.
+
+Responsible for:
+
+- Capturing screenshots from Samsung Notes
+- Automatically scrolling through notes
+- Detecting page dividers
+- Finding overlapping regions between screenshots
+- Stitching screenshots into complete pages
+- Exporting final PDFs
+
+This is the primary script you run.
+
+---
+
+### `mergeToPdf.py`
+
+Merge PNG images in a folder to a pdf. The main scripts runs this at the end, but can also be used standalone.
+
+```bash
+python mergeToPdf.py
+Enter image folder path: <output_folder_name>
+```
+
+---
+
+### `mergeFolders.py`
+
+Transfers png images in one folder to another folder taking care of the file indexes in both the folders. This is usefull when you have to merge two partially generated image folders. This usually happens when the script detects blank pages in a single note or if the user input is interfering in between a scroll. Once merged you can directly call the mergeToPdf.py to merge the output png images to pdf.
+
+```bash
+python mergeFolders.py
+Enter input image folder path: <input_folder_name>
+Enter output image folder path: <output_folder_name>
+
+python mergeToPdf.py
+Enter image folder path: <output_folder_name>
+```
+
+---
+
+### `getScreenRegion.py`
+
+The main scripts calls this if you select yes when it promts you to change the SCREEN_REGION. It is advised to do this for the initial setup. You can also run this manually to directly get the values for SCREEN_REGION = ( x ,y , width, height ) and then edit in the main script.
+
+### `getWinColor.py`
+
+Utility script for divider color selection. The main script prompts you if you want to change the divider color. if you select yes, then this script is called. You can also run this script manually to get the RBG color for yourself and edit this in the script(better for converting more than one note)
+
+```bash
+python getWinColor.py
+```
+Used to:
+
+- Detect RGB color values from any screen location
+- Capture divider colors using:
+  - `Ctrl + Left Mouse Button`
+- Help configure:
+  - `TARGET_COLOR`
+  - `COLOR_TOL`
+
+Useful when Samsung Notes uses a different theme or divider color.
+
+---
+
+### `requirements.txt`
+
+Contains all Python dependencies required for the project.
+
+Install them using:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### `output/`
+
+Stores generated outputs:
+
+- stitched images
+- exported PDFs
+
+---
+
 
 ### Automation clicks wrong area
 
